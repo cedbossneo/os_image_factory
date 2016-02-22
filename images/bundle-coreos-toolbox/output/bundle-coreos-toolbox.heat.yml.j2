@@ -1,12 +1,12 @@
 #
 ##
-### Written by @cedbossneo
+### Written by the CAT team
 ##
 #
 heat_template_version: 2013-05-23
 
 
-description: Docker stack on Ubuntu Trusty
+description: Toolbox stack on CoreOS
 
 
 parameters:
@@ -64,6 +64,21 @@ resources:
       key_name: { get_param: keypair_name }
       image: {{ result_img_id }}
       flavor: { get_param: flavor_name }
+      user_data:
+        str_replace:
+          template: |
+           #cloud-config
+           coreos:
+             etcd2:
+               name: "%H"
+               advertise-client-urls: http://$private_ipv4:2379
+               initial-advertise-peer-urls: http://$private_ipv4:2380
+               initial-cluster: "%H=http://$private_ipv4:2380"
+               listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+               listen-peer-urls: http://$private_ipv4:2380
+             units:
+               - name: etcd2.service
+                 command: start
       networks:
         - network: { get_resource: network }
       security_groups:

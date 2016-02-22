@@ -1,0 +1,8 @@
+---
+bundle:
+  name: bundle-coreos-toolbox
+  img_base: e000b57d-4390-4323-9fd4-f609087a2a2a
+  properties:
+    img_os: CoreOS
+    cw_bundle: Toolbox
+    cw_origin: Cloudwatt
