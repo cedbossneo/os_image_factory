@@ -58,17 +58,23 @@ resources:
     properties:
       floating_network_id: 6ea98324-0f14-49f6-97c0-885d1b8dc517
 
-  server:
-    type: OS::Nova::Server
+  kp:
+      type: OS::Nova::KeyPair
+      properties:
+        name: { get_param: keypair_name }
+
+  coreos_userdata:
+    type: OS::Heat::SoftwareConfig
     properties:
-      key_name: { get_param: keypair_name }
-      image: {{ result_img_id }}
-      flavor: { get_param: flavor_name }
-      user_data:
+      config:
         str_replace:
           template: |
            #cloud-config
-           coreos:
+            users:
+              - name: "cloud"
+                ssh-authorized-keys:
+                  - $public_key$
+            coreos:
              etcd2:
                name: "%H"
                advertise-client-urls: http://$private_ipv4:2379
@@ -79,6 +85,18 @@ resources:
              units:
                - name: etcd2.service
                  command: start
+          params:
+            $public_key$: { get_attr: [kp, public_key] }
+
+  server:
+    type: OS::Nova::Server
+    properties:
+      key_name: { get_param: keypair_name }
+      image: {{ result_img_id }}
+      flavor: { get_param: flavor_name }
+      user_data_format: RAW
+      user_data:
+        get_resource: coreos_userdata
       networks:
         - network: { get_resource: network }
       security_groups:
