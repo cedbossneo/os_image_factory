@@ -63,30 +63,25 @@ resources:
       properties:
         name: { get_param: keypair_name }
 
-  coreos_userdata:
-    type: OS::Heat::SoftwareConfig
+  coreos_cloudconfig:
+    type: OS::Heat::CloudConfig
     properties:
-      config:
-        str_replace:
-          template: |
-           #cloud-config
-            users:
-              - name: "cloud"
-                ssh-authorized-keys:
-                  - $public_key$
-            coreos:
-             etcd2:
-               name: "%H"
-               advertise-client-urls: http://$private_ipv4:2379
-               initial-advertise-peer-urls: http://$private_ipv4:2380
-               initial-cluster: "%H=http://$private_ipv4:2380"
-               listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
-               listen-peer-urls: http://$private_ipv4:2380
-             units:
-               - name: etcd2.service
-                 command: start
-          params:
-            $public_key$: { get_attr: [kp, public_key] }
+      cloud-config:
+        users:
+          - name: "cloud"
+            ssh-authorized-keys:
+              - { get_attr: [kp, public_key] }
+        coreos:
+         etcd2:
+           name: "%H"
+           advertise-client-urls: http://$private_ipv4:2379
+           initial-advertise-peer-urls: http://$private_ipv4:2380
+           initial-cluster: "%H=http://$private_ipv4:2380"
+           listen-client-urls: http://0.0.0.0:2379,http://0.0.0.0:4001
+           listen-peer-urls: http://$private_ipv4:2380
+         units:
+           - name: etcd2.service
+             command: start
 
   server:
     type: OS::Nova::Server
@@ -96,7 +91,7 @@ resources:
       flavor: { get_param: flavor_name }
       user_data_format: RAW
       user_data:
-        get_resource: coreos_userdata
+        get_resource: coreos_cloudconfig
       networks:
         - network: { get_resource: network }
       security_groups:
