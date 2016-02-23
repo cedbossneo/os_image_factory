@@ -1,7 +1,7 @@
 ---
 bundle:
   name: bundle-coreos-toolbox
-  img_base: e000b57d-4390-4323-9fd4-f609087a2a2a
+  img_base: 811c20f7-ad34-4401-85a9-72b9f921a0dd
   properties:
     img_os: CoreOS
     cw_bundle: Toolbox
