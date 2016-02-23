@@ -1,0 +1,26 @@
+{
+    "variables": {
+        "source_image": "unknown",
+        "image_name": "unknown",
+        "build_flavor": "42",
+        "factory_network": "{{ env `FACTORY_NETWORK_ID` }}",
+        "factory_security_group_name": "{{ env `FACTORY_SECURITY_GROUP_NAME` }}",
+        "bundle_path": "unknown"
+    },
+    "builders": [
+        {
+            "type": "openstack",
+            "ssh_username": "core",
+            "flavor": "{{ user `build_flavor` }}",
+            "image_name": "{{ user `image_name` }}",
+            "source_image": "{{ user `source_image` }}",
+            "security_groups": ["{{ user `factory_security_group_name` }}"],
+            "networks": "{{ user `factory_network` }}",
+            "communicator": "ssh",
+            "ssh_pty": true,
+            "ssh_timeout": "5m"
+        }
+    ],
+    "provisioners": [
+    ]
+}

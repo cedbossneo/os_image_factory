@@ -82,7 +82,7 @@ resources:
               - name: etcd2.service
                 command: start
           params:
-            $dummy$: ""
+            $public_key$: ""
       networks:
         - network: { get_resource: network }
       security_groups:

@@ -2,6 +2,7 @@
 bundle:
   name: bundle-coreos-toolbox
   img_base: 811c20f7-ad34-4401-85a9-72b9f921a0dd
+  packer_file: "build-core.packer.json"
   properties:
     img_os: CoreOS
     cw_bundle: Toolbox

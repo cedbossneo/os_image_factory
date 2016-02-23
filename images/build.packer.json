@@ -10,7 +10,7 @@
     "builders": [
         {
             "type": "openstack",
-            "ssh_username": "core",
+            "ssh_username": "cloud",
             "flavor": "{{ user `build_flavor` }}",
             "image_name": "{{ user `image_name` }}",
             "source_image": "{{ user `source_image` }}",
